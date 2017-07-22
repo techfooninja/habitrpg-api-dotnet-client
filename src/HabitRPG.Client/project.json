@@ -1,11 +1,12 @@
 ﻿{
   "supports": {},
   "dependencies": {
+    "Microsoft.Bcl.Build": "1.0.21",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
-    "NETStandard.Library": "1.6.0",
+    "NETStandard.Library": "1.6.1",
     "Newtonsoft.Json": "10.0.3",
-    "System.Net.Http": "4.1.0",
-    "System.Net.Primitives": "4.0.11"
+    "System.Net.Http": "4.3.2",
+    "System.Net.Primitives": "4.3.0"
   },
   "frameworks": {
     "netstandard1.3": {}

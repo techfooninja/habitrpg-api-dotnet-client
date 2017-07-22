@@ -25,7 +25,7 @@ namespace HabitRPG.Client.Clients
         {
         }
 
-        public LoginClient(Guid userId, Guid apiToken, Uri serviceUri) : base(userId, apiToken, serviceUri)
+        public LoginClient(Uri serviceUri) : base(Guid.Empty, Guid.Empty, serviceUri)
         {
         }
 
@@ -57,7 +57,7 @@ namespace HabitRPG.Client.Clients
 
             var response = await HttpClient.PostAsJsonAsync("user/auth/local/login", cred);
 
-            return GetResult<LoginResult>(response, false);
+            return GetResult<LoginResult>(response);
         }
     }
 }

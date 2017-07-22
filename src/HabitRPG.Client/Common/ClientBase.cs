@@ -60,7 +60,7 @@ namespace HabitRPG.Client.Common
 
         public ILogger Logger { get; set; }
 
-        public T GetResult<T>(HttpResponseMessage response, bool parseAsApiResponse = true)
+        public T GetResult<T>(HttpResponseMessage response)
         {
             if (Logger != null)
             {
@@ -77,13 +77,8 @@ namespace HabitRPG.Client.Common
                 Logger.Write("Result: {0} ", contentJson);
             }
 
-            if (parseAsApiResponse)
-            {
-                var deserializeObject = JsonConvert.DeserializeObject<ApiResponse<T>>(contentJson, _configuration.SerializerSettings);
-                return deserializeObject.Data;
-            }
-
-            return JsonConvert.DeserializeObject<T>(contentJson, _configuration.SerializerSettings);
+            var deserializeObject = JsonConvert.DeserializeObject<ApiResponse<T>>(contentJson, _configuration.SerializerSettings);
+            return deserializeObject.Data;
         }
 
         #region Dispose

@@ -4,7 +4,7 @@ namespace HabitRPG.Client.Model
 {
     public class LoginResult
     {
-        [JsonProperty("_id")]
+        [JsonProperty("id")]
         public string UserId { get; protected set; }
 
         [JsonProperty("apiToken")]

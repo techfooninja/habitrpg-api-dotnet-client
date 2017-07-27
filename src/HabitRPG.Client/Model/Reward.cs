@@ -1,10 +1,6 @@
 ﻿namespace HabitRPG.Client.Model
 {
-    public class Reward : Task
+    public class Reward : TaskItem
     {
-        public override string Type
-        {
-            get { return "reward"; }
-        }
     }
 }

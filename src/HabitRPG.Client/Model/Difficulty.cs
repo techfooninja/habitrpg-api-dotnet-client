@@ -1,11 +1,19 @@
 ﻿namespace HabitRPG.Client.Model
 {
-    public static class Difficulty
+    using System.Runtime.Serialization;
+
+    public enum Difficulty
     {
-        public const float Easy = 1f;
+        [EnumMember(Value = "0.1")]
+        Trivial,
 
-        public const float Medium = 1.5f;
+        [EnumMember(Value = "1")]
+        Easy,
 
-        public const float Hard = 2f;
+        [EnumMember(Value = "1.5")]
+        Medium,
+
+        [EnumMember(Value = "2")]
+        Hard
     }
 }

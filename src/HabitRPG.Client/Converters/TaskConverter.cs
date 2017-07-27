@@ -5,14 +5,14 @@ using System;
 
 namespace HabitRPG.Client.Converters
 {
-    internal class TaskConverter : CustomCreationConverter<Model.ITask>
+    internal class TaskConverter : CustomCreationConverter<Model.TaskItem>
     {
-        public override Model.ITask Create(Type objectType)
+        public override Model.TaskItem Create(Type objectType)
         {
             throw new NotImplementedException();
         }
 
-        public Model.ITask Create(Type objectType, JObject jObject)
+        public Model.TaskItem Create(Type objectType, JObject jObject)
         {
             var type = (string)jObject.Property("type");
 

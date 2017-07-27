@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Attribute = HabitRPG.Client.Model.Attribute;
-using Task = HabitRPG.Client.Model.Task;
+using TaskItem = HabitRPG.Client.Model.TaskItem;
 
 namespace HabitRPG.Client.Test
 {
@@ -231,7 +231,7 @@ namespace HabitRPG.Client.Test
             Assert.IsNotEmpty(getBuyableItemsAsyncResponse.Result);
         }
 
-        private static void AssertTask(Task expected, Task actual)
+        private static void AssertTask(TaskItem expected, TaskItem actual)
         {
             Assert.AreEqual(expected.Type, actual.Type);
             AssertDateTime(expected.DateCreated.Value, actual.DateCreated.Value);
@@ -261,7 +261,7 @@ namespace HabitRPG.Client.Test
                 DateCreated = DateTime.UtcNow,
                 Text = "Main Task: " + DateTime.UtcNow,
                 Notes = "Notes",
-                Tags = new List<Guid>
+                TagGuids = new List<Guid>
             {
                Guid.NewGuid()
             },
@@ -297,7 +297,7 @@ namespace HabitRPG.Client.Test
                 DateCreated = DateTime.UtcNow,
                 Text = "Main Task: " + DateTime.UtcNow,
                 Notes = "Notes",
-                Tags = new List<Guid>
+                TagGuids = new List<Guid>
             {
                Guid.NewGuid()
             },
@@ -322,7 +322,7 @@ namespace HabitRPG.Client.Test
                 DateCreated = DateTime.UtcNow,
                 Text = "Main Task: " + DateTime.UtcNow,
                 Notes = "Notes",
-                Tags = new List<Guid>
+                TagGuids = new List<Guid>
             {
                Guid.NewGuid()
             },
@@ -351,7 +351,7 @@ namespace HabitRPG.Client.Test
                 DateCreated = DateTime.UtcNow,
                 Text = "Main Task: " + DateTime.Now,
                 Notes = "Notes",
-                Tags = new List<Guid>
+                TagGuids = new List<Guid>
             {
                Guid.NewGuid()
             },

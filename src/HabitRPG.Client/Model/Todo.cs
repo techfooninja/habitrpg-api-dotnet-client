@@ -5,13 +5,8 @@ using Newtonsoft.Json.Converters;
 
 namespace HabitRPG.Client.Model
 {
-    public class Todo : Task
+    public class Todo : TaskItem
     {
-        public override string Type
-        {
-            get { return "todo"; }
-        }
-
         [JsonProperty("completed")]
         public bool Completed { get; set; }
 

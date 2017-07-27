@@ -3,13 +3,8 @@ using Newtonsoft.Json;
 
 namespace HabitRPG.Client.Model
 {
-    public class Daily : Task
+    public class Daily : TaskItem
     {
-        public override string Type
-        {
-            get { return "daily"; }
-        }
-
         [JsonProperty("history")]
         public List<History> History { get; set; }
 

@@ -3,13 +3,8 @@ using Newtonsoft.Json;
 
 namespace HabitRPG.Client.Model
 {
-    public class Habit : Task
+    public class Habit : TaskItem
     {
-        public override string Type
-        {
-            get { return "habit"; }
-        }
-
         public Habit()
         {
             Up = true;

@@ -170,7 +170,16 @@
         public static async Task<List<TaskItem>> GetAllAsync(TaskQuery query = TaskQuery.All)
         {
             await UpdateTagsAsync();
-            var response = await HttpClient.GetAsync(String.Format("tasks/user?type=", query));
+            HttpResponseMessage response = null;
+            if (query == TaskQuery.All)
+            {
+                response = await HttpClient.GetAsync("tasks/user");
+            }
+            else
+            {
+                response = await HttpClient.GetAsync(String.Format("tasks/user?type={0}", query.GetDisplayString()));
+            }
+            
             response.EnsureSuccessStatusCode();
             return GetResult<List<TaskItem>>(response);
         }

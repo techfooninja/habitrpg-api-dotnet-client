@@ -12,7 +12,7 @@
     {
         protected ChecklistTaskItem() : base()
         {
-            InternalChecklist = new Dictionary<Guid, Checklist>();
+            InternalChecklist = new List<Checklist>();
         }
 
         #region Properties
@@ -21,14 +21,14 @@
         public bool CollapseChecklist { get; set; }
 
         [JsonProperty("checklist")]
-        protected Dictionary<Guid, Checklist> InternalChecklist { get; set; }
+        protected List<Checklist> InternalChecklist { get; set; }
 
         [JsonIgnore]
         public IReadOnlyList<Checklist> Checklist
         {
             get
             {
-                return InternalChecklist.Values.ToList();
+                return InternalChecklist;
             }
         }
 
@@ -91,6 +91,37 @@
 
             var response = await HttpClient.PutAsJsonAsync(String.Format("tasks/{0}/checklist/{1}", Id, checklist.Id), checklist);
             CopyFrom(GetResult<ChecklistTaskItem>(response));
+        }
+
+        protected void UpdateCollection<T>(List<Checklist> original, List<Checklist> amend, bool deleteStaleEntries = true)
+        {
+            if (deleteStaleEntries)
+            {
+                foreach (var item in original)
+                {
+                    // If an item exists in original, but not in amend, then it should be removed from original
+                    var amendObject = amend.SingleOrDefault(i => i.Id == item.Id);
+                    if (amendObject == null)
+                    {
+                        original.Remove(item);
+                    }
+                }
+            }
+
+            foreach (var item in amend)
+            {
+                var originalObject = original.SingleOrDefault(i => i.Id == item.Id);
+                if (originalObject == null)
+                {
+                    // If it doesn't exist in original yet, add it
+                    original.Add(item);
+                }
+                else
+                {
+                    // Otherwise, update the existing item
+                    originalObject.CopyFrom(item);
+                }
+            }
         }
 
         protected override void CopyFrom(TaskItem item)

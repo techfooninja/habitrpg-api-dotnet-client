@@ -71,9 +71,9 @@
             }
         }
 
-        protected virtual void UpdateCollection<T>(List<T> original, List<T> amend, bool replaceAll = true) where T : HabiticaObject
+        protected virtual void UpdateCollection<T>(List<T> original, List<T> amend, bool deleteStaleEntries = true) where T : HabiticaObject
         {
-            if (replaceAll)
+            if (deleteStaleEntries)
             {
                 original.Clear();
             }

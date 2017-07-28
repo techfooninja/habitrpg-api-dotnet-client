@@ -31,6 +31,7 @@
         public bool Completed { get; set; }
 
         [JsonProperty("frequency")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Frequency Frequency { get; set; }
 
         [JsonProperty("repeat")]
@@ -38,9 +39,9 @@
 
         [JsonProperty("streak")]
         public int Streak { get; set; }
-
+        
+        [JsonProperty("startDate", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(IsoDateTimeConverter))]
-        [JsonProperty("startDate")]
         public DateTime? StartDate { get; set; }
 
         #endregion Properties
@@ -53,6 +54,7 @@
             Completed = daily.Completed;
             Repeat = daily.Repeat;
             Streak = daily.Streak;
+            StartDate = daily.StartDate;
         }
     }
 }

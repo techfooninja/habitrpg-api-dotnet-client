@@ -51,6 +51,7 @@
         public double Value { get; set; }
 
         [JsonProperty("priority")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Difficulty Priority { get; set; }
 
         [JsonProperty("attribute")]
@@ -61,6 +62,7 @@
         public Challenge Challenge { get; set; }
 
         [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
         protected TaskType Type { get; set; }
 
         [JsonIgnore]

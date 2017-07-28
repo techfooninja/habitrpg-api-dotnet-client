@@ -1,12 +1,13 @@
 ﻿using System;
 using NUnit.Framework;
+using HabitRPG.Client.Model;
 
 namespace HabitRPG.Client.Test
 {
     [TestFixture]
     public class IntegrationBase
     {
-        private readonly IUserClient _userClient;
+        private readonly HabiticaClient _client;
 
         public IntegrationBase()
         {
@@ -19,7 +20,7 @@ namespace HabitRPG.Client.Test
                 ServiceUri = new Uri(@"https://habitica.com/")
             };
 
-            _userClient = new UserClient(HabitRpgConfiguration);
+            _client = new HabiticaClient(HabitRpgConfiguration);
         }
 
         public HabitRpgConfiguration HabitRpgConfiguration { get; set; }
@@ -27,18 +28,14 @@ namespace HabitRPG.Client.Test
         [TearDown]
         public void TearDown()
         {
-            var response = _userClient.GetTasksAsync();
+            /*var response = TaskItem.GetAllAsync();
             response.Wait();
 
-            var tasks = response.Result;
-            if (tasks.Count > 0)
+            foreach (TaskItem item in response.Result)
             {
-                tasks.ForEach(t =>
-                {
-                    var deleteTaskAsync = _userClient.DeleteTaskAsync(t.Id);
-                    deleteTaskAsync.Wait();
-                });
-            }
+                var itemResponse = item.DeleteAsync();
+                itemResponse.Wait();
+            }*/
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Runtime.Serialization;
-
-namespace HabitRPG.Client.Model
+﻿namespace HabitRPG.Client.Model
 {
+    using System.Runtime.Serialization;
+
     public enum Attribute
     {
         [EnumMember(Value = "str")]

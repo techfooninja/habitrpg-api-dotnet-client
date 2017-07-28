@@ -11,16 +11,10 @@
 
     public class TaskItem : HabiticaObject
     {
-        protected TaskItem() : this(TaskType.Daily)
-        {
-            // This method is used for serialization
-        }
-
-        public TaskItem(TaskType type)
+        protected TaskItem()
         {
             TagGuids = new List<Guid>();
             Priority = Difficulty.Easy;
-            Type = type;
         }
 
         #region Properties
@@ -35,17 +29,21 @@
         [JsonProperty("text")]
         public string Text { get; set; }
 
+        [JsonProperty("alias")]
+        public string Alias { get; set; }
+
         [JsonProperty("notes")]
         public string Notes { get; set; }
 
         [JsonProperty("tags")]
         protected List<Guid> TagGuids { get; set; }
 
-        public List<Tag> Tags
+        [JsonIgnore]
+        public IReadOnlyList<Tag> Tags
         {
             get
             {
-                return Tag.AllTags.Where(t => TagGuids.SingleOrDefault(g => t.Id == g) != null).ToList();
+                return InternalAllTags.Where(t => TagGuids.SingleOrDefault(g => t.Key == g) != null).Select(kvp => kvp.Value).ToList();
             }
         }
 
@@ -63,11 +61,31 @@
         public Challenge Challenge { get; set; }
 
         [JsonProperty("type")]
-        public TaskType Type { get; protected set; }
+        protected TaskType Type { get; set; }
+
+        [JsonIgnore]
+        protected static Dictionary<Guid, Tag> InternalAllTags { get; private set; }
+
+        [JsonIgnore]
+        public static IReadOnlyList<Tag> AllTags
+        {
+            get
+            {
+                return InternalAllTags.Values.ToList();
+            }
+        }
+
+        /*
+         * TODO
+         * 
+         * Missing Properties:
+         *   Reminders
+         * 
+         */ 
 
         #endregion Properties
 
-        private void CopyFrom(TaskItem item)
+        protected virtual void CopyFrom(TaskItem item)
         {
             Id = item.Id;
             DateCreated = item.DateCreated;
@@ -81,7 +99,7 @@
             Type = item.Type;
         }
 
-        public async Task<ScoreResult> ScoreAsync(Direction direction)
+        public async Task<ScoreResult> ScoreAsync(Direction direction = Direction.Up)
         {
             var response = await HttpClient.PostAsync(string.Format("tasks/{0}/score/{1}", Id, direction.ToString().ToLower()), null);
             response.EnsureSuccessStatusCode();
@@ -116,7 +134,7 @@
             // TODO: Dispose?
         }
 
-        public async Task AddTag(Tag tag)
+        public async Task AddTagAsync(Tag tag)
         {
             if (tag.Id == Guid.Empty)
             {
@@ -131,32 +149,62 @@
             var response = await HttpClient.PostAsync(String.Format("tasks/{0}/tags/{1}", Id, tag.Id), null);
             response.EnsureSuccessStatusCode();
             CopyFrom(GetResult<TaskItem>(response));
+
+            var result = InternalAllTags[tag.Id];
+
+            if (result == null)
+            {
+                InternalAllTags.Add(tag.Id, tag);
+            }
         }
 
-        public async Task DeleteTag(Tag tag)
+        public async Task DeleteTagAsync(Tag tag)
         {
             var response = await HttpClient.DeleteAsync(String.Format("tasks/{0}/tags/{1}", Id, tag.Id));
             response.EnsureSuccessStatusCode();
             CopyFrom(GetResult<TaskItem>(response));
         }
 
-        public static async Task<List<TaskItem>> GetTasksAsync(TaskQuery query = TaskQuery.All)
+        public static async Task<List<TaskItem>> GetAllAsync(TaskQuery query = TaskQuery.All)
         {
+            await UpdateTagsAsync();
             var response = await HttpClient.GetAsync(String.Format("tasks/user?type=", query));
             response.EnsureSuccessStatusCode();
             return GetResult<List<TaskItem>>(response);
         }
 
-        public static async Task<TaskItem> GetTaskAsync(Guid id)
+        public static async Task<TaskItem> GetAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
                 throw new ArgumentException("id");
             }
 
+            await UpdateTagsAsync();
+
             var response = await HttpClient.GetAsync(string.Format("tasks/{0}", id));
             response.EnsureSuccessStatusCode();
             return GetResult<TaskItem>(response);
+        }
+
+        protected static async Task UpdateTagsAsync()
+        {
+            var response = await HttpClient.GetAsync("tags");
+            response.EnsureSuccessStatusCode();
+            var result = GetResult<List<Tag>>(response);
+
+            if (InternalAllTags == null)
+            {
+                InternalAllTags = result.ToDictionary(t => t.Id);
+            }
+            else
+            {
+                InternalAllTags.Clear();
+                foreach (var item in result)
+                {
+                    InternalAllTags.Add(item.Id, item);
+                }
+            }
         }
     }
 }

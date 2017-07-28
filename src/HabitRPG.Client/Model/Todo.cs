@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace HabitRPG.Client.Model
+﻿namespace HabitRPG.Client.Model
 {
-    public class Todo : TaskItem
+    using System;
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+
+    public class Todo : ChecklistTaskItem
     {
+        public Todo() : base()
+        {
+            Type = TaskType.Todo;
+        }
+
+        #region Properties
+
         [JsonProperty("completed")]
         public bool Completed { get; set; }
 
@@ -18,12 +25,18 @@ namespace HabitRPG.Client.Model
         public DateTime? DateCompleted { get; set; }
 
         [JsonProperty("date")]
-        public DateTime? Date { get; set; }
+        public DateTime? DueDate { get; set; }
 
-        [JsonProperty("collapseChecklist")]
-        public bool CollapseChecklist { get; set; }
+        #endregion Properties
 
-        [JsonProperty("checklist")]
-        public List<Checklist> Checklist { get; set; }
+        protected override void CopyFrom(TaskItem item)
+        {
+            Todo todo = (Todo)item;
+            base.CopyFrom(item);
+            Completed = todo.Completed;
+            Archived = todo.Archived;
+            DateCompleted = todo.DateCompleted;
+            DueDate = todo.DueDate;
+        }
     }
 }

@@ -2,5 +2,9 @@
 {
     public class Reward : TaskItem
     {
+        public Reward() : base()
+        {
+            Type = TaskType.Reward;
+        }
     }
 }

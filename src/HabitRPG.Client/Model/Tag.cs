@@ -10,8 +10,6 @@
 
     public class Tag : HabiticaObject
     {
-        public static List<Tag> AllTags = new List<Tag>();
-
         #region Properties
 
         [JsonProperty("id")]
@@ -58,36 +56,6 @@
             var response = await HttpClient.DeleteAsync(string.Format("tags/{0}", Id));
             response.EnsureSuccessStatusCode();
             // TODO: Dispose?
-        }
-
-        public static async Task UpdateTagsAsync()
-        {
-            var response = await HttpClient.GetAsync("tags");
-            response.EnsureSuccessStatusCode();
-            var result = GetResult<List<Tag>>(response);
-
-            if (AllTags == null)
-            {
-                AllTags = result;
-            }
-            else
-            {
-                foreach (var oldTag in AllTags)
-                {
-                    if (result.SingleOrDefault(t => t.Id == oldTag.Id) == null)
-                    {
-                        AllTags.Remove(oldTag);
-                    }
-                }
-
-                foreach (var newTag in result)
-                {
-                    if (AllTags.SingleOrDefault(t => t.Id == newTag.Id) == null)
-                    {
-                        AllTags.Add(newTag);
-                    }
-                }
-            }
         }
     }
 }

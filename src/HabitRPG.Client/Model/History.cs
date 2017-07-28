@@ -1,10 +1,10 @@
-﻿using System;
-using Newtonsoft.Json;
-using HabitRPG.Client.Converters;
-
-namespace HabitRPG.Client.Model
+﻿namespace HabitRPG.Client.Model
 {
-    public class History
+    using System;
+    using Newtonsoft.Json;
+    using HabitRPG.Client.Converters;
+
+    public class History : HabiticaObject
     {
         [JsonConverter(typeof(TimestampConverter))]
         [JsonProperty("date")]

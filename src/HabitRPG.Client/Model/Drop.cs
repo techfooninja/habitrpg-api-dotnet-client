@@ -21,5 +21,14 @@ namespace HabitRPG.Client.Model
 
         [JsonProperty("notes")]
         public string Notes { get; set; }
+
+        [JsonProperty("target")]
+        public DropTarget Target { get; set; }
+
+        [JsonProperty("article")]
+        public string Article { get; set; }
+
+        [JsonProperty("canDrop")]
+        public bool CanDrop { get; set; }
     }
 }

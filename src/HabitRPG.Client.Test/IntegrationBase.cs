@@ -35,5 +35,80 @@ namespace HabitRPG.Client.Test
                 itemResponse.Wait();
             }
         }
+
+        #region Helper functions
+
+        protected static Daily CreateDaily()
+        {
+            var daily = new Daily
+            {
+                Text = "Main Task: " + DateTime.UtcNow,
+                Notes = "Notes",
+                Value = 0,
+                Priority = Difficulty.Hard,
+                Attribute = Model.Attribute.Strength,
+                Completed = false,
+                Repeat = new Repeat
+                {
+                    Friday = false,
+                    Wednesday = false
+                },
+                CollapseChecklist = false,
+                Streak = 32
+            };
+
+            return daily;
+        }
+
+        protected static Habit CreateHabit()
+        {
+            var habitTask = new Habit
+            {
+                Text = "Main Task: " + DateTime.UtcNow,
+                Notes = "Notes",
+                Value = 0,
+                Priority = Difficulty.Hard,
+                Attribute = Model.Attribute.Strength,
+                Up = true,
+                Down = true
+            };
+
+            return habitTask;
+        }
+
+        protected static Todo CreateTodo()
+        {
+            var habitTask = new Todo
+            {
+                Text = "Main Task: " + DateTime.UtcNow,
+                Notes = "Notes",
+                Value = 0,
+                Priority = Difficulty.Hard,
+                Attribute = Model.Attribute.Strength,
+                Completed = true,
+                Archived = true,
+                DateCompleted = DateTime.Now,
+                DueDate = DateTime.Now,
+                CollapseChecklist = true
+            };
+
+            return habitTask;
+        }
+
+        protected static Reward CreateReward()
+        {
+            var reward = new Reward
+            {
+                Text = "Main Task: " + DateTime.Now,
+                Notes = "Notes",
+                Value = 1,
+                Priority = Difficulty.Hard,
+                Attribute = Model.Attribute.Strength
+            };
+
+            return reward;
+        }
+
+        #endregion Helper functions
     }
 }

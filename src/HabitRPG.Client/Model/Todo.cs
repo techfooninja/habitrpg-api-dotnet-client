@@ -21,10 +21,10 @@
         public bool Archived { get; set; }
 
         [JsonConverter(typeof(IsoDateTimeConverter))]
-        [JsonProperty("dateCompleted")]
+        [JsonProperty("dateCompleted", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? DateCompleted { get; set; }
 
-        [JsonProperty("date")]
+        [JsonProperty("date", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? DueDate { get; set; }
 
         #endregion Properties

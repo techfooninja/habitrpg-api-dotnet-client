@@ -5,7 +5,7 @@ namespace HabitRPG.Client.Model
     public class RandomReward
     {
         [JsonProperty("crit")]
-        public string Crit { get; set; }
+        public string CriticalHit { get; set; }
 
         [JsonProperty("streakBonus")]
         public string StreakBonus { get; set; }

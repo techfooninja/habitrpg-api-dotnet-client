@@ -17,6 +17,7 @@ namespace HabitRPG.Client
                     new ChallengeConverter(),
                     new TimestampConverter(),
                 },
+                NullValueHandling = NullValueHandling.Ignore,
 
 #if DEBUG
                 Error = (sender, args) =>

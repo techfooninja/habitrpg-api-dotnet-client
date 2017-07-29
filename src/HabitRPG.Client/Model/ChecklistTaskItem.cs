@@ -20,7 +20,7 @@
         [JsonProperty("collapseChecklist")]
         public bool CollapseChecklist { get; set; }
 
-        [JsonProperty("checklist")]
+        [JsonProperty("checklist", NullValueHandling = NullValueHandling.Ignore)]
         protected List<Checklist> InternalChecklist { get; set; }
 
         [JsonIgnore]
@@ -40,7 +40,12 @@
             {
                 throw new ArgumentNullException("checklist");
             }
-            
+
+            if (Id == Guid.Empty)
+            {
+                await SaveAsync();
+            }
+
             var response = await HttpClient.PostAsJsonAsync(String.Format("tasks/{0}/checklist", Id), checklist);
             CopyFrom(GetResult<ChecklistTaskItem>(response));
         }
@@ -73,7 +78,7 @@
                 throw new ArgumentException("checklist");
             }
 
-            var response = await HttpClient.PostAsJsonAsync(String.Format("tasks/{0}/checklist/{1}", Id, checklist.Id), null);
+            var response = await HttpClient.PostAsync(String.Format("tasks/{0}/checklist/{1}/score", Id, checklist.Id), null);
             CopyFrom(GetResult<ChecklistTaskItem>(response));
         }
 
@@ -97,14 +102,21 @@
         {
             if (deleteStaleEntries)
             {
-                foreach (var item in original)
+                List<Checklist> itemsToRemove = new List<Checklist>();
+                foreach (var item in original.ToList())
                 {
                     // If an item exists in original, but not in amend, then it should be removed from original
                     var amendObject = amend.SingleOrDefault(i => i.Id == item.Id);
                     if (amendObject == null)
                     {
-                        original.Remove(item);
+                        // Cannot remove item here - will cause a concurrency issue
+                        itemsToRemove.Add(item);
                     }
+                }
+
+                foreach (var item in itemsToRemove)
+                {
+                    original.Remove(item);
                 }
             }
 

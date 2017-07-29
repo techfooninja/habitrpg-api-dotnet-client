@@ -24,9 +24,9 @@
             Debug.WriteLine("URL: {0} Method: {1} StatusCode: {2}", response.RequestMessage.RequestUri,
                 response.RequestMessage.Method, response.StatusCode);
 
-            response.EnsureSuccessStatusCode();
-
             var contentJson = response.Content.ReadAsStringAsync().Result;
+
+            response.EnsureSuccessStatusCode();
 
             Debug.WriteLine("Result: {0} ", contentJson);
 
@@ -44,14 +44,22 @@
         {
             if (deleteStaleEntries)
             {
+                List<Guid> itemsToRemove = new List<Guid>();
+
                 foreach (var kvp in original)
                 {
                     // If an item exists in original, but not in amend, then it should be removed from original
                     var amendObject = amend[kvp.Key];
                     if (amendObject == null)
                     {
-                        original.Remove(kvp.Key);
+                        // Can't remove here, it will cause a concurrency issue
+                        itemsToRemove.Add(kvp.Key);
                     }
+                }
+
+                foreach (var item in itemsToRemove)
+                {
+                    original.Remove(item);
                 }
             }
 

@@ -11,11 +11,12 @@
         {
             Type = TaskType.Daily;
             InternalHistory = new List<History>();
+            ConfirmBeforeCron = true;
         }
 
         #region Properties
 
-        [JsonProperty("history")]
+        [JsonProperty("history", NullValueHandling = NullValueHandling.Ignore)]
         protected List<History> InternalHistory { get; set; }
 
         [JsonIgnore]
@@ -34,7 +35,7 @@
         [JsonConverter(typeof(StringEnumConverter))]
         public Frequency Frequency { get; set; }
 
-        [JsonProperty("repeat")]
+        [JsonProperty("repeat", NullValueHandling = NullValueHandling.Ignore)]
         public Repeat Repeat { get; set; }
 
         [JsonProperty("streak")]
@@ -43,6 +44,20 @@
         [JsonProperty("startDate", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime? StartDate { get; set; }
+
+        [JsonProperty("yesterDaily")]
+        public bool ConfirmBeforeCron { get; set; }
+
+        /*
+         * TODO
+         * 
+         * Missing Properties:
+         *   daysOfMonth
+         *   weeksOfMonth
+         *   nextDue
+         *   isDue
+         * 
+         */
 
         #endregion Properties
 
@@ -55,6 +70,7 @@
             Repeat = daily.Repeat;
             Streak = daily.Streak;
             StartDate = daily.StartDate;
+            ConfirmBeforeCron = daily.ConfirmBeforeCron;
         }
     }
 }

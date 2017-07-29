@@ -10,7 +10,7 @@
         [JsonProperty("completed")]
         public bool Completed { get; protected set; }
 
-        [JsonProperty("text")]
+        [JsonProperty("text", NullValueHandling = NullValueHandling.Ignore)]
         public string Text { get; set; }
 
         [JsonProperty("id")]

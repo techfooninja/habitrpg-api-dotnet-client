@@ -8,7 +8,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
-
+    
     public class TaskItem : HabiticaObject
     {
         protected TaskItem()
@@ -29,10 +29,10 @@
         [JsonProperty("text")]
         public string Text { get; set; }
 
-        [JsonProperty("alias")]
+        [JsonProperty("alias", NullValueHandling = NullValueHandling.Ignore)]
         public string Alias { get; set; }
 
-        [JsonProperty("notes")]
+        [JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
         public string Notes { get; set; }
 
         [JsonProperty("tags")]
@@ -43,7 +43,9 @@
         {
             get
             {
-                return InternalAllTags.Where(t => TagGuids.SingleOrDefault(g => t.Key == g) != null).Select(kvp => kvp.Value).ToList();
+                return TagGuids
+                        .Where(k => InternalAllTags.ContainsKey(k))
+                        .Select(k => InternalAllTags[k]).ToList();
             }
         }
 
@@ -51,14 +53,26 @@
         public double Value { get; set; }
 
         [JsonProperty("priority")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public Difficulty Priority { get; set; }
+        protected float InternalPriority { get; set; }
+
+        [JsonIgnore()]
+        public Difficulty Priority
+        {
+            get
+            {
+                return InternalPriority.GetDifficulty();
+            }
+            set
+            {
+                InternalPriority = value.GetValue();
+            }
+        }
 
         [JsonProperty("attribute")]
         [JsonConverter(typeof(StringEnumConverter))]
         public Attribute Attribute { get; set; }
 
-        [JsonProperty("challenge")]
+        [JsonProperty("challenge", NullValueHandling = NullValueHandling.Ignore)]
         public Challenge Challenge { get; set; }
 
         [JsonProperty("type")]
@@ -104,7 +118,9 @@
         public async Task<ScoreResult> ScoreAsync(Direction direction = Direction.Up)
         {
             var response = await HttpClient.PostAsync(string.Format("tasks/{0}/score/{1}", Id, direction.ToString().ToLower()), null);
-            response.EnsureSuccessStatusCode();
+            var updatedTask = await GetAsync(Id);
+            CopyFrom(updatedTask);
+
             return GetResult<ScoreResult>(response);
         }
 
@@ -122,8 +138,6 @@
                 // Otherwise, just update the task
                 response = await HttpClient.PutAsJsonAsync(string.Format("tasks/{0}", Id), this);
             }
-
-            response.EnsureSuccessStatusCode();
 
             // Update this task
             CopyFrom(GetResult<TaskItem>(response));
@@ -149,7 +163,6 @@
             }
 
             var response = await HttpClient.PostAsync(String.Format("tasks/{0}/tags/{1}", Id, tag.Id), null);
-            response.EnsureSuccessStatusCode();
             CopyFrom(GetResult<TaskItem>(response));
 
             var result = InternalAllTags[tag.Id];
@@ -163,13 +176,12 @@
         public async Task DeleteTagAsync(Tag tag)
         {
             var response = await HttpClient.DeleteAsync(String.Format("tasks/{0}/tags/{1}", Id, tag.Id));
-            response.EnsureSuccessStatusCode();
             CopyFrom(GetResult<TaskItem>(response));
         }
 
         public static async Task<List<TaskItem>> GetAllAsync(TaskQuery query = TaskQuery.All)
         {
-            await UpdateTagsAsync();
+            await GetTagsAsync();
             HttpResponseMessage response = null;
             if (query == TaskQuery.All)
             {
@@ -180,7 +192,6 @@
                 response = await HttpClient.GetAsync(String.Format("tasks/user?type={0}", query.GetDisplayString()));
             }
             
-            response.EnsureSuccessStatusCode();
             return GetResult<List<TaskItem>>(response);
         }
 
@@ -191,17 +202,15 @@
                 throw new ArgumentException("id");
             }
 
-            await UpdateTagsAsync();
+            await GetTagsAsync();
 
             var response = await HttpClient.GetAsync(string.Format("tasks/{0}", id));
-            response.EnsureSuccessStatusCode();
             return GetResult<TaskItem>(response);
         }
 
-        protected static async Task UpdateTagsAsync()
+        public static async Task<List<Tag>> GetTagsAsync()
         {
             var response = await HttpClient.GetAsync("tags");
-            response.EnsureSuccessStatusCode();
             var result = GetResult<List<Tag>>(response);
 
             if (InternalAllTags == null)
@@ -216,6 +225,8 @@
                     InternalAllTags.Add(item.Id, item);
                 }
             }
+
+            return result;
         }
     }
 }

@@ -20,6 +20,32 @@ namespace HabitRPG.Client.Test
         }
 
         [Test]
+        public void GetAllTasks()
+        {
+            var daily = CreateDaily();
+            var taskResponse = daily.SaveAsync();
+            taskResponse.Wait();
+
+            var response = TaskItem.GetAllAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(0, response.Result.Count);
+        }
+
+        [Test]
+        public void GetAllTasksWithFilter()
+        {
+            var daily = CreateDaily();
+            var taskResponse = daily.SaveAsync();
+            taskResponse.Wait();
+
+            var response = TaskItem.GetAllAsync(TaskQuery.Dailies);
+            response.Wait();
+
+            Assert.AreNotEqual(0, response.Result.Count);
+        }
+
+        [Test]
         public void CreateNewTodo()
         {
             var todo = CreateTodo();
@@ -49,153 +75,320 @@ namespace HabitRPG.Client.Test
             Assert.AreNotEqual(Guid.Empty, daily.Id);
         }
 
-        /*[Test]
-        public void Should_create_new_habit_task()
-        {
-            // Setup
-            var habit = CreateHabit();
-
-            // Action
-            var response = _client.CreateTaskAsync(habit);
-            response.Wait();
-
-            // Verify the result
-            AssertTask(habit, response.Result);
-
-            Assert.AreEqual(habit.Down, response.Result.Down);
-            Assert.AreEqual(habit.Up, response.Result.Up);
-        }
-
         [Test]
-        public void Should_create_new_daily_task()
+        public void CreateNewReward()
         {
-            // Setup
-            var daily = CreateDaily();
-
-            // Action
-            var response = _client.CreateTaskAsync(daily);
-            response.Wait();
-
-            // Verify the result
-            AssertTask(daily, response.Result);
-
-            Assert.AreEqual(daily.Repeat.Friday, response.Result.Repeat.Friday);
-            Assert.AreEqual(daily.CollapseChecklist, response.Result.CollapseChecklist);
-            Assert.AreEqual(daily.Checklist.First().Id, response.Result.Checklist.First().Id);
-            Assert.AreEqual(daily.Checklist.First().Text, response.Result.Checklist.First().Text);
-            Assert.AreEqual(daily.Streak, response.Result.Streak);
-        }
-
-        [Test]
-        public void Should_create_new_reward_task()
-        {
-            // Setup
             var reward = CreateReward();
-
-            // Action
-            var response = _client.CreateTaskAsync(reward);
+            var response = reward.SaveAsync();
             response.Wait();
 
-            // Verify the result
-            AssertTask(reward, response.Result);
+            Assert.AreNotEqual(Guid.Empty, reward.Id);
         }
 
         [Test]
-        public void Should_create_and_update_todo()
+        public void DeleteTodo()
         {
-            // Setup
-            var todo = CreateTodo();
-
-            // Action
-            var response = _client.CreateTaskAsync(todo);
+            var task = CreateTodo();
+            var response = task.SaveAsync();
             response.Wait();
 
-            AssertTask(todo, response.Result);
+            Assert.AreNotEqual(Guid.Empty, task.Id);
 
-            var newTodo = response.Result;
-            newTodo.Text = "Some new updated Text";
-
-            response = _client.UpdateTaskAsync(newTodo);
+            response = task.DeleteAsync();
             response.Wait();
 
-            AssertTask(newTodo, response.Result);
+            try
+            {
+                response = TaskItem.GetAsync(task.Id);
+                response.Wait();
+
+                Assert.Fail("Should not be able to delete a task that is already deleted");
+            }
+            catch
+            {
+                Assert.Pass();
+            }
         }
 
         [Test]
-        public void Should_return_all_tasks()
+        public void DeleteHabit()
         {
-            // Setup
-            var habitTask = CreateHabit();
-            var task = _client.CreateTaskAsync(habitTask);
-            task.Wait();
-
-            // Action
-            var response = _client.GetTasksAsync();
+            var task = CreateHabit();
+            var response = task.SaveAsync();
             response.Wait();
 
-            // Verify the result
-            Assert.GreaterOrEqual(response.Result.Count, 1);
+            Assert.AreNotEqual(Guid.Empty, task.Id);
+
+            response = task.DeleteAsync();
+            response.Wait();
+
+            try
+            {
+                response = TaskItem.GetAsync(task.Id);
+                response.Wait();
+
+                Assert.Fail("Should not be able to delete a task that is already deleted");
+            }
+            catch
+            {
+                Assert.Pass();
+            }
         }
 
         [Test]
-        public void Should_return_daily_task()
+        public void DeleteDaily()
         {
-            // Setup
-            Daily daily = CreateDaily();
-            var task = _client.CreateTaskAsync(daily);
-            task.Wait();
-
-            // Action
-            var response = _client.GetTaskAsync<Daily>(task.Result.Id);
+            var task = CreateDaily();
+            var response = task.SaveAsync();
             response.Wait();
 
-            // Verify the result
-            AssertTask(daily, response.Result);
+            Assert.AreNotEqual(Guid.Empty, task.Id);
 
-            Assert.AreEqual(daily.Repeat.Friday, response.Result.Repeat.Friday);
-            Assert.AreEqual(daily.CollapseChecklist, response.Result.CollapseChecklist);
-            Assert.AreEqual(daily.Checklist.First().Id, response.Result.Checklist.First().Id);
-            Assert.AreEqual(daily.Checklist.First().Text, response.Result.Checklist.First().Text);
-            Assert.AreEqual(daily.Streak, response.Result.Streak);
+            response = task.DeleteAsync();
+            response.Wait();
+
+            try
+            {
+                response = TaskItem.GetAsync(task.Id);
+                response.Wait();
+
+                Assert.Fail("Should not be able to delete a task that is already deleted");
+            }
+            catch
+            {
+                Assert.Pass();
+            }
         }
 
         [Test]
-        public void Should_score_existing_task()
+        public void DeleteReward()
         {
-            // Setup
-            var daily = CreateDaily();
-            var task = _client.CreateTaskAsync(daily);
-            task.Wait();
-
-            // Action
-            var response = _client.ScoreTaskAsync(task.Result.Id, Direction.Up);
+            var task = CreateReward();
+            var response = task.SaveAsync();
             response.Wait();
 
-            // Verify the result
-            Assert.IsNotNull(response.Result);
+            Assert.AreNotEqual(Guid.Empty, task.Id);
+
+            response = task.DeleteAsync();
+            response.Wait();
+
+            try
+            {
+                response = TaskItem.GetAsync(task.Id);
+                response.Wait();
+
+                Assert.Fail("Should not be able to delete a task that is already deleted");
+            }
+            catch
+            {
+                Assert.Pass();
+            }
         }
 
         [Test]
-        public void Should_create_and_score_new_habit_task()
+        public void UpdateTask()
         {
-            // Setup
+            var task = CreateDaily();
+            var response = task.SaveAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(Guid.Empty, task.Id);
+
+            task.Text = "Updated task text";
+            task.Streak = 100;
+            response = task.SaveAsync();
+            response.Wait();
+
+            Assert.AreEqual("Updated task text", task.Text);
+            Assert.AreEqual(100, task.Streak);
+        }
+        
+        [Test]
+        public void GetAllTags()
+        {
+            var response = TaskItem.GetTagsAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(0, response.Result.Count);
+        }
+
+        [Test]
+        public void AssignTagToTask()
+        {
+            var response = TaskItem.GetTagsAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(0, response.Result.Count);
+
             var habit = CreateHabit();
+            var addResponse = habit.AddTagAsync(response.Result[0]);
+            addResponse.Wait();
 
-            var returnedHabit = _client.CreateTaskAsync<Habit>(habit);
+            Assert.AreNotEqual(0, habit.Tags.Count);
+            Assert.AreEqual(response.Result[0], habit.Tags.First());
+        }
 
-            // Action
-            var response = _client.ScoreTaskAsync(returnedHabit.Result.Id, Direction.Up);
+        [Test]
+        public void DeleteTagFromTask()
+        {
+            var response = TaskItem.GetTagsAsync();
             response.Wait();
 
-            // Verify the result
-            var tasks = _client.GetTasksAsync();
-            tasks.Wait();
+            Assert.AreNotEqual(0, response.Result.Count);
 
-            bool exist = tasks.Result.Exists(t => t.Text.Equals(returnedHabit.Result.Text));
+            var habit = CreateHabit();
+            var addResponse = habit.AddTagAsync(response.Result[0]);
+            addResponse.Wait();
 
-            Assert.IsNotNull(response);
-            Assert.IsTrue(exist);
+            Assert.AreNotEqual(0, habit.Tags.Count);
+            Assert.AreEqual(response.Result[0], habit.Tags.First());
+
+            var deleteResponse = habit.DeleteTagAsync(response.Result[0]);
+            deleteResponse.Wait();
+
+            Assert.AreEqual(0, habit.Tags.Count);
         }
+
+        [Test]
+        public void ScoreDaily()
+        {
+            var daily = CreateDaily();
+            var response = daily.SaveAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(Guid.Empty, daily.Id);
+
+            response = daily.ScoreAsync();
+            response.Wait();
+
+            Assert.IsTrue(daily.Completed);
+        }
+
+        [Test]
+        public void ScoreHabitUp()
+        {
+            var habit = CreateHabit();
+            var response = habit.SaveAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(Guid.Empty, habit.Id);
+
+            int oldCount = habit.CounterUp;
+
+            response = habit.ScoreAsync();
+            response.Wait();
+
+            Assert.AreEqual(oldCount + 1, habit.CounterUp);
+        }
+
+        [Test]
+        public void ScoreHabitDown()
+        {
+            var habit = CreateHabit();
+            var response = habit.SaveAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(Guid.Empty, habit.Id);
+
+            int oldCount = habit.CounterDown;
+
+            response = habit.ScoreAsync(Direction.Down);
+            response.Wait();
+
+            Assert.AreEqual(oldCount + 1, habit.CounterDown);
+        }
+
+        [Test]
+        public void ScoreTodo()
+        {
+            var todo = CreateTodo();
+            var response = todo.SaveAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(Guid.Empty, todo.Id);
+
+            response = todo.ScoreAsync();
+            response.Wait();
+
+            Assert.IsTrue(todo.Completed);
+        }
+
+        [Test]
+        public void ScoreReward()
+        {
+            var reward = CreateReward();
+            var response = reward.SaveAsync();
+            response.Wait();
+
+            Assert.AreNotEqual(Guid.Empty, reward.Id);
+
+            var scoreResponse = reward.ScoreAsync();
+            scoreResponse.Wait();
+        }
+
+        [Test]
+        public void AddChecklistItem()
+        {
+            var daily = CreateDaily();
+            var response = daily.AddChecklistItemAsync(new Checklist() { Text = "Checklist item 1" });
+            response.Wait();
+
+            Assert.AreEqual(1, daily.Checklist.Count);
+            Assert.AreEqual("Checklist item 1", daily.Checklist[0].Text);
+        }
+
+        [Test]
+        public void DeleteChecklistItem()
+        {
+            var daily = CreateDaily();
+            var response = daily.AddChecklistItemAsync(new Checklist() { Text = "Checklist item 1" });
+            response.Wait();
+
+            Assert.AreEqual(1, daily.Checklist.Count);
+            Assert.AreEqual("Checklist item 1", daily.Checklist[0].Text);
+
+            response = daily.DeleteChecklistItemAsync(daily.Checklist[0]);
+            response.Wait();
+
+            Assert.AreEqual(0, daily.Checklist.Count);
+        }
+
+        [Test]
+        public void UpdateChecklistItem()
+        {
+            var daily = CreateDaily();
+            var response = daily.AddChecklistItemAsync(new Checklist() { Text = "Checklist item 1" });
+            response.Wait();
+
+            Assert.AreEqual(1, daily.Checklist.Count);
+            Assert.AreEqual("Checklist item 1", daily.Checklist[0].Text);
+
+            daily.Checklist[0].Text = "New Checklist item 2";
+            response = daily.UpdateChecklistItem(daily.Checklist[0]);
+            response.Wait();
+
+            Assert.AreEqual(1, daily.Checklist.Count);
+            Assert.AreEqual("New Checklist item 2", daily.Checklist[0].Text);
+        }
+
+        [Test]
+        public void ScoreChecklistItem()
+        {
+            var daily = CreateDaily();
+            var response = daily.AddChecklistItemAsync(new Checklist() { Text = "Checklist item 1" });
+            response.Wait();
+
+            Assert.AreEqual(1, daily.Checklist.Count);
+            Assert.AreEqual("Checklist item 1", daily.Checklist[0].Text);
+            
+            response = daily.ScoreChecklistItemAsync(daily.Checklist[0]);
+            response.Wait();
+
+            Assert.AreEqual(1, daily.Checklist.Count);
+            Assert.IsTrue(daily.Checklist[0].Completed);
+        }
+
+        /*
 
         [Test]
         public void Should_get_user()
@@ -241,103 +434,6 @@ namespace HabitRPG.Client.Test
 
             Assert.IsNotEmpty(getBuyableItemsAsyncResponse.Result);
         }
-
-        private static void AssertTask(TaskItem expected, TaskItem actual)
-        {
-            Assert.AreEqual(expected.Type, actual.Type);
-            AssertDateTime(expected.DateCreated.Value, actual.DateCreated.Value);
-            Assert.AreEqual(expected.Text, actual.Text);
-            Assert.AreEqual(expected.Notes, actual.Notes);
-            Assert.AreEqual(expected.Tags.First().GetHashCode(), actual.Tags.First().GetHashCode());
-            Assert.AreEqual(expected.Value, actual.Value);
-            Assert.AreEqual(expected.Priority, actual.Priority);
-            Assert.AreEqual(expected.Attribute, actual.Attribute);
-
-            if (expected.Challenge != null)
-            {
-                Assert.AreEqual(expected.Challenge.Id, actual.Challenge.Id);
-            }
-        }
-
-        private static void AssertDateTime(DateTime expected, DateTime actual)
-        {
-            Assert.AreEqual(Math.Abs((expected - actual).TotalSeconds) < 5, true);
-        }
         */
-        private static Daily CreateDaily()
-        {
-            var daily = new Daily
-            {
-                Text = "Main Task: " + DateTime.UtcNow,
-                Notes = "Notes",
-                Value = 0,
-                Priority = Difficulty.Hard,
-                Attribute = Attribute.Strength,
-                Completed = false,
-                Repeat = new Repeat
-                {
-                    Friday = false,
-                    Wednesday = false
-                },
-                CollapseChecklist = false,
-                Streak = 32
-            };
-
-            return daily;
-        }
-        
-        private static Habit CreateHabit()
-        {
-            var habitTask = new Habit
-            {
-                Text = "Main Task: " + DateTime.UtcNow,
-                Notes = "Notes",
-                Value = 0,
-                Priority = Difficulty.Hard,
-                Attribute = Attribute.Strength,
-                Down = false
-            };
-
-            return habitTask;
-        }
-        
-        private static Todo CreateTodo()
-        {
-            var habitTask = new Todo
-            {
-                Text = "Main Task: " + DateTime.UtcNow,
-                Notes = "Notes",
-                Value = 0,
-                Priority = Difficulty.Hard,
-                Attribute = Attribute.Strength,
-                Completed = true,
-                Archived = true,
-                DateCompleted = DateTime.Now,
-                DueDate = DateTime.Now,
-                CollapseChecklist = true
-            };
-
-            return habitTask;
-        }/*
-
-        private static Reward CreateReward()
-        {
-            var reward = new Reward
-            {
-                Id = Guid.NewGuid().ToString(),
-                DateCreated = DateTime.UtcNow,
-                Text = "Main Task: " + DateTime.Now,
-                Notes = "Notes",
-                TagGuids = new List<Guid>
-            {
-               Guid.NewGuid()
-            },
-                Value = 1110,
-                Priority = Difficulty.Hard,
-                Attribute = Attribute.Strength
-            };
-
-            return reward;
-        }*/
     }
 }

@@ -15,7 +15,7 @@ namespace HabitRPG.Client.Model
 
         #region Properties
 
-        [JsonProperty("history")]
+        [JsonProperty("history", NullValueHandling = NullValueHandling.Ignore)]
         protected List<History> InternalHistory { get; set; }
 
         [JsonIgnore]
@@ -33,6 +33,12 @@ namespace HabitRPG.Client.Model
         [JsonProperty("down")]
         public bool Down { get; set; }
 
+        [JsonProperty("counterUp")]
+        public int CounterUp { get; protected set; }
+
+        [JsonProperty("counterDown")]
+        public int CounterDown { get; protected set; }
+
         #endregion Properties
 
         protected override void CopyFrom(TaskItem item)
@@ -42,6 +48,8 @@ namespace HabitRPG.Client.Model
             UpdateCollection<History>(InternalHistory, habit.InternalHistory);
             Up = habit.Up;
             Down = habit.Down;
+            CounterUp = habit.CounterUp;
+            CounterDown = habit.CounterDown;
         }
     }
 }

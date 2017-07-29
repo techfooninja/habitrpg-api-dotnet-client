@@ -8,33 +8,24 @@ namespace HabitRPG.Client.Model
         public Buffs Buffs { get; set; }
 
         [JsonProperty("class")]
-        public string Class { get; set; }
+        public Class Class { get; set; }
 
         [JsonProperty("exp")]
-        public double Exp { get; set; }
+        public double Experience { get; set; }
 
         [JsonProperty("gp")]
         public double Gold { get; set; }
 
         [JsonProperty("hp")]
-        public double HP { get; set; }
+        public double HitPoints { get; set; }
 
         [JsonProperty("lvl")]
-        public int Lvl { get; set; }
+        public int Level { get; set; }
 
         [JsonProperty("mp")]
-        public double MP { get; set; }
+        public double ManaPoints { get; set; }
 
         [JsonProperty("training")]
         public StatsBase Training { get; set; }
-
-        [JsonProperty("toNextLevel")]
-        public int ToNextLevel { get; set; }
-
-        [JsonProperty("maxHealth")]
-        public int MaxHealth { get; set; }
-
-        [JsonProperty("maxMP")]
-        public int MaxMP { get; set; }
     }
 }

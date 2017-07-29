@@ -388,6 +388,20 @@ namespace HabitRPG.Client.Test
             Assert.IsTrue(daily.Checklist[0].Completed);
         }
 
+        [Test]
+        public void ClearCompletedTodos()
+        {
+            var todo = CreateTodo();
+            var saveResponse = todo.SaveAsync();
+            saveResponse.Wait();
+
+            var response = todo.ScoreAsync();
+            response.Wait();
+
+            var clearResponse = TaskItem.ClearCompletedTodos();
+            clearResponse.Wait();
+        }
+
         /*
 
         [Test]
@@ -409,21 +423,6 @@ namespace HabitRPG.Client.Test
             response.Wait();
 
             Assert.IsNotEmpty(response.Result.Gear.Equipped);
-        }
-
-        [Test]
-        public void Should_clear_completed()
-        {
-            var todo = CreateTodo();
-
-            var createTaskResponse = _client.CreateTaskAsync(todo);
-            createTaskResponse.Wait();
-
-            var scoreTaskResponse = _client.ScoreTaskAsync(createTaskResponse.Result.Id, Direction.Up);
-            scoreTaskResponse.Wait();
-
-            var clearCompletedResponse = _client.ClearCompletedAsync();
-            clearCompletedResponse.Wait();
         }
 
         [Test]

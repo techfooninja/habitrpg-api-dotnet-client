@@ -228,5 +228,11 @@
 
             return result;
         }
+
+        public static async Task ClearCompletedTodos()
+        {
+            var response = await HttpClient.PostAsync("tasks/clearCompletedTodos", null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

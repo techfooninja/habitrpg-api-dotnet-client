@@ -32,6 +32,16 @@
         [JsonProperty("achievements")]
         public Achievements Achievements { get; set; }
 
+        [JsonIgnore]
+        public Uri AvatarUri
+        {
+            // TODO: Is there a better way to do this where an image object is returned?
+            get
+            {
+                return new Uri(String.Format("{0}/export/avatar-{1}.png", Configuration.ServiceUri, Id));
+            }
+        }
+
         /*
          * 
          * Missing:

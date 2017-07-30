@@ -7,7 +7,7 @@ namespace HabitRPG.Client.Test
     [TestFixture]
     public class IntegrationBase
     {
-        private readonly HabiticaClient _client;
+        protected readonly HabiticaClient _client;
 
         public IntegrationBase()
         {

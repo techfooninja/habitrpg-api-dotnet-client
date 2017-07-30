@@ -68,8 +68,5 @@ namespace HabitRPG.Client.Model
 
         [JsonProperty("timezoneOffset")]
         public int TimezoneOffset { get; set; }
-
-        [JsonProperty("automaticAllocation")]
-        public bool AutomaticAllocation { get; set; }
     }
 }

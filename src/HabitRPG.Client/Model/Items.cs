@@ -8,6 +8,7 @@ namespace HabitRPG.Client.Model
     {
         public Items()
         {
+            Quests = new Dictionary<string, int>();
             Eggs = new Dictionary<string, int>();
             Mounts = new Dictionary<string, bool>();
             Food = new Dictionary<string, int>();
@@ -20,6 +21,9 @@ namespace HabitRPG.Client.Model
 
         [JsonProperty("currentMount")]
         public String CurrentMount { get; set; }
+
+        [JsonProperty("quests")]
+        public Dictionary<String, int> Quests { get; set; }
 
         [JsonProperty("eggs")]
         public Dictionary<String, int> Eggs { get; set; }

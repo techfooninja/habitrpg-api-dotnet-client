@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using HabitRPG.Client.Converters;
-
-namespace HabitRPG.Client.Model
+﻿namespace HabitRPG.Client.Model
 {
-    public class Member
+    using System;
+    using Newtonsoft.Json;
+    using System.Threading.Tasks;
+
+    public class Member : HabiticaObject
     {
+        #region Properties
+
         [JsonProperty("_id")]
         public Guid Id { get; set; }
 
@@ -31,5 +32,24 @@ namespace HabitRPG.Client.Model
         [JsonProperty("achievements")]
         public Achievements Achievements { get; set; }
 
+        /*
+         * 
+         * Missing:
+         * 
+         *   Party
+         */
+
+        #endregion Properties
+
+        public static async Task<Member> GetAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("id");
+            }
+
+            var response = await HttpClient.GetAsync(string.Format("members/{0}", id));
+            return GetResult<Member>(response);
+        }
     }
 }

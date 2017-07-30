@@ -12,11 +12,8 @@ namespace HabitRPG.Client.Test
     [TestFixture]
     public class TaskTests : IntegrationBase
     {
-        private readonly HabiticaClient _client;
-
         public TaskTests()
         {
-            _client = new HabiticaClient(HabitRpgConfiguration);
         }
 
         [Test]

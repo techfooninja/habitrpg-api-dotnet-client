@@ -28,6 +28,6 @@ namespace HabitRPG.Client.Model
         public List<Guid> Challenges { get; set; }
 
         [JsonProperty("tasksOrder")]
-        protected TaskOrder TasksOrder { get; set; }
+        public TaskOrder TasksOrder { get; set; }
     }
 }

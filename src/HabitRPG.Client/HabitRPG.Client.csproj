@@ -39,15 +39,19 @@
     </NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Clients\LoginClient.cs" />
     <Compile Include="Common\ClientBase.cs" />
     <Compile Include="Converters\ChallengeConverter.cs" />
     <Compile Include="Converters\TaskConverter.cs" />
     <Compile Include="Converters\TimestampConverter.cs" />
+    <Compile Include="Interfaces\ILoginClient.cs" />
     <Compile Include="Model\ApiResponse.cs" />
     <Compile Include="Model\Content.cs" />
     <Compile Include="Model\Drop.cs" />
     <Compile Include="Model\Egg.cs" />
     <Compile Include="Model\Food.cs" />
+    <Compile Include="Model\LoginCredential.cs" />
+    <Compile Include="Model\LoginResult.cs" />
     <Compile Include="Model\RandomReward.cs" />
     <Compile Include="Model\ScoreResult.cs" />
     <Compile Include="Model\TaskOrder.cs" />

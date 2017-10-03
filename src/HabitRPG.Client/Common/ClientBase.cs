@@ -78,7 +78,6 @@ namespace HabitRPG.Client.Common
             }
 
             var deserializeObject = JsonConvert.DeserializeObject<ApiResponse<T>>(contentJson, _configuration.SerializerSettings);
-
             return deserializeObject.Data;
         }
 

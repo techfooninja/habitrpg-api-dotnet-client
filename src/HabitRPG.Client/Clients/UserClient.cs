@@ -167,5 +167,12 @@ namespace HabitRPG.Client
         {
             await HttpClient.PostAsync("tasks/clearCompletedTodos", null);
         }
+
+        public async Task<List<Tag>> GetTags()
+        {
+            var response = await HttpClient.GetAsync("tags");
+
+            return GetResult<List<Tag>>(response);
+        }
     }
 }

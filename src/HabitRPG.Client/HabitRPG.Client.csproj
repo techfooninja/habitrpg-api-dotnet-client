@@ -50,6 +50,7 @@
     <Compile Include="Model\Food.cs" />
     <Compile Include="Model\RandomReward.cs" />
     <Compile Include="Model\ScoreResult.cs" />
+    <Compile Include="Model\TaskOrder.cs" />
     <Compile Include="Model\UserDefaults.cs" />
     <Compile Include="HabitRpgConfiguration.cs" />
     <Compile Include="Extensions\HttpClientExtension.cs" />

@@ -24,5 +24,20 @@ namespace HabitRPG.Client.Model
 
         [JsonProperty("down")]
         public bool Down { get; set; }
+
+        [JsonProperty("counterUp")]
+        public double UpCount { get; set; }
+
+        [JsonProperty("counterDown")]
+        public double DownCount { get; set; }
+
+        [JsonIgnore()]
+        public double Delta
+        {
+            get
+            {
+                return UpCount - DownCount;
+            }
+        }
     }
 }

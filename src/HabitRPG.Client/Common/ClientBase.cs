@@ -60,6 +60,14 @@ namespace HabitRPG.Client.Common
 
         public ILogger Logger { get; set; }
 
+        public HabitRpgConfiguration Configuration
+        {
+            get
+            {
+                return _configuration;
+            }
+        }
+
         public T GetResult<T>(HttpResponseMessage response)
         {
             if (Logger != null)

@@ -37,5 +37,19 @@ namespace HabitRPG.Client
         public Uri ServiceUri { get; set; }
 
         public JsonSerializerSettings SerializerSettings { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is HabitRpgConfiguration)
+            {
+                HabitRpgConfiguration config = (HabitRpgConfiguration)obj;
+                return
+                    ApiToken.Equals(config.ApiToken) &&
+                    UserId.Equals(config.UserId) &&
+                    ServiceUri.Equals(config.ServiceUri);
+            }
+
+            return false;
+        }
     }
 }

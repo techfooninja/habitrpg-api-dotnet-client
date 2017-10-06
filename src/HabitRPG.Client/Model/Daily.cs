@@ -27,5 +27,8 @@ namespace HabitRPG.Client.Model
 
         [JsonProperty("streak")]
         public double Streak { get; set; }
+
+        [JsonProperty("isDue")]
+        public bool IsDue { get; set; }
     }
 }

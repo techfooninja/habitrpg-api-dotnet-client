@@ -52,6 +52,7 @@
     <Compile Include="Model\Food.cs" />
     <Compile Include="Model\LoginCredential.cs" />
     <Compile Include="Model\LoginResult.cs" />
+    <Compile Include="Model\QuestProgress.cs" />
     <Compile Include="Model\RandomReward.cs" />
     <Compile Include="Model\ScoreResult.cs" />
     <Compile Include="Model\TaskOrder.cs" />

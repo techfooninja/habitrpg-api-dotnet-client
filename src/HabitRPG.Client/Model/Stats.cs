@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HabitRPG.Client.Model
 {
@@ -8,7 +9,8 @@ namespace HabitRPG.Client.Model
         public Buffs Buffs { get; set; }
 
         [JsonProperty("class")]
-        public string Class { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Class Class { get; set; }
 
         [JsonProperty("exp")]
         public double Exp { get; set; }

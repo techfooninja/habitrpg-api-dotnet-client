@@ -1,15 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HabitRPG.Client.Model
 {
     public class Drop
     {
-        [JsonProperty("text")]
-        public string Text { get; set; }
-
-        [JsonProperty("type")]
-        public string Type { get; set; }
-
         [JsonProperty("dialog")]
         public string Dialog { get; set; }
 
@@ -19,7 +14,8 @@ namespace HabitRPG.Client.Model
         [JsonProperty("key")]
         public string Key { get; set; }
 
-        [JsonProperty("notes")]
-        public string Notes { get; set; }
+        [JsonProperty("type")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DropType Type { get; set; }
     }
 }

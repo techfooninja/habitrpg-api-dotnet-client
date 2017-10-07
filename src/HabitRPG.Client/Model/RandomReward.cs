@@ -8,9 +8,12 @@ namespace HabitRPG.Client.Model
         public string Crit { get; set; }
 
         [JsonProperty("streakBonus")]
-        public string StreakBonus { get; set; }
+        public double StreakBonus { get; set; }
 
         [JsonProperty("drop")]
         public Drop Drop { get; set; }
+
+        [JsonProperty("quest")]
+        public QuestProgress QuestProgress { get; set; }
     }
 }

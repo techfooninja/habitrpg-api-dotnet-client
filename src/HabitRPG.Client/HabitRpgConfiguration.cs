@@ -16,6 +16,7 @@ namespace HabitRPG.Client
                     new TaskConverter(),
                     new ChallengeConverter(),
                     new TimestampConverter(),
+                    new DropConverter()
                 },
 
 #if DEBUG
